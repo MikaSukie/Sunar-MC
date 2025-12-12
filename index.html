@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SunarMC - Mock</title>
+<style>
+  html,body { height:100%; margin:0; background:#081020; overflow:hidden; }
+  body { cursor: none; }
+
+  #bg, #cursorLayer { position:fixed; left:0; top:0; width:100%; height:100%; display:block; }
+  #cursorLayer { pointer-events:none; z-index:40; }
+
+  .ui {
+    position:fixed;
+    left:50%; top:50%;
+    transform:translate(-50%,-50%);
+    z-index:50;
+    text-align:center;
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    user-select:none;
+    -webkit-user-select:none;
+    width: 420px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:18px;
+    pointer-events: auto;
+  }
+
+  .logo {
+    font-weight:900;
+    font-size:72px;
+    letter-spacing:1px;
+    line-height:0.9;
+    margin:0;
+    margin-top:-6px;
+    margin-bottom:4px;
+    background: linear-gradient(90deg, #e185ff 0%, #b25dff 40%, #6fc3ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow:
+      0 8px 34px rgba(118,38,169,0.18),
+      0 2px 6px rgba(0,0,0,0.6);
+    transform-origin: center;
+    animation: logoBreath 3500ms ease-in-out infinite;
+  }
+  @keyframes logoBreath {
+    0% { transform: translateY(0) scale(1); filter: drop-shadow(0 6px 12px rgba(118,38,169,0.06)); }
+    50% { transform: translateY(-2px) scale(1.01); filter: drop-shadow(0 10px 30px rgba(118,38,169,0.12)); }
+    100% { transform: translateY(0) scale(1); filter: drop-shadow(0 6px 12px rgba(118,38,169,0.06)); }
+  }
+
+.splash {
+  font-size:18px;
+  color:#d9c06a;
+  margin:0;
+  font-weight:700;
+  text-transform:none;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.55);
+  transform-origin: center;
+  will-change: transform, text-shadow;
+
+  animation: splashPulse 1600ms ease-in-out infinite;
+}
+
+@keyframes splashPulse {
+  0% {
+    transform: translateX(150px) translateY(-25px) rotate(-25deg) scale(1);
+    text-shadow: 0 2px 6px rgba(0,0,0,0.55);
+  }
+  50% {
+    transform: translateX(150px) translateY(-25px) rotate(-25deg) scale(1.06);
+    text-shadow: 0 8px 30px rgba(217,192,106,0.16);
+  }
+  100% {
+    transform: translateX(150px) translateY(-25px) rotate(-25deg) scale(1);
+    text-shadow: 0 2px 6px rgba(0,0,0,0.55);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash { animation: none; transform: translateX(150px) translateY(-25px) rotate(-25deg); }
+}
+
+  .menu {
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-top:6px;
+  }
+
+  .btn {
+    -webkit-appearance:none;
+    appearance:none;
+    border: 2px solid rgba(0,0,0,0.7);
+    background: linear-gradient(#cfcfcf, #9f9f9f);
+    width:260px;
+    height:48px;
+    border-radius:6px;
+    box-shadow:
+      inset 0 -6px 0 rgba(0,0,0,0.08),
+      0 8px 0 rgba(0,0,0,0.42);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#202020;
+    font-weight:800;
+    font-size:16px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    cursor:default;
+    position:relative;
+    overflow:hidden;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+    user-select:none;
+  }
+  .btn:active {
+    transform: translateY(3px);
+    box-shadow: inset 0 4px 8px rgba(0,0,0,0.25);
+  }
+  .btn:focus { outline: none; box-shadow: 0 10px 0 rgba(0,0,0,0.45); }
+
+  .btn .label {
+    display:inline-block;
+    transform-origin:center;
+    animation: menuPulse 1600ms ease-in-out infinite;
+  }
+  @keyframes menuPulse {
+    0% { transform: translateY(0) scale(1); text-shadow: 0 0 0 rgba(255,255,255,0); }
+    50% { transform: translateY(-2px) scale(1.02); text-shadow: 0 8px 20px rgba(255,255,255,0.06); }
+    100% { transform: translateY(0) scale(1); text-shadow: 0 0 0 rgba(255,255,255,0); }
+  }
+
+  .hint { margin-top:6px; font-size:12px; color:rgba(255,255,255,0.68); }
+
+  @media (max-width:480px){
+    .logo{font-size:44px}
+    .splash{font-size:14px}
+    .btn{width:200px; height:42px; font-size:14px}
+    .ui { width:320px; gap:12px; }
+  }
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<canvas id="cursorLayer"></canvas>
+
+<div class="ui" aria-hidden="false">
+  <h1 class="logo">SunarMC</h1>
+  <div class="splash">Beautiful</div>
+
+  <div class="menu" role="menu" aria-label="Main menu">
+    <button class="btn" id="downloadBtn" role="menuitem"><span class="label">Download</span></button>
+    <button class="btn" id="changelogBtn" role="menuitem"><span class="label">View Changelog</span></button>
+  </div>
+</div>
+
+<script>
+
+const canvas = document.getElementById('bg');
+const ctx = canvas.getContext('2d', { alpha: true });
+const cursorCanvas = document.getElementById('cursorLayer');
+const cctx = cursorCanvas.getContext('2d');
+
+let W=0, H=0;
+function resize(){
+  W = canvas.width = innerWidth;
+  H = canvas.height = innerHeight;
+  cursorCanvas.width = W;
+  cursorCanvas.height = H;
+}
+addEventListener('resize', resize);
+resize();
+
+let backgroundDarkness = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 0.8 : 0.5;
+
+let mouse = {x: W/2, y: H/2};
+let par = {x:0, y:0};
+const parallaxMax = 26;
+const parallaxLerp = 0.12;
+window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+window.addEventListener('touchmove', e => {
+  if(e.touches && e.touches[0]) { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; }
+}, {passive:true});
+
+const rand = (a=0,b=1) => a + Math.random()*(b-a);
+function hsvToRgb(h,s,v){
+  let r,g,b;
+  let i = Math.floor(h*6);
+  let f = h*6 - i;
+  let p = v*(1-s);
+  let q = v*(1-f*s);
+  let t = v*(1-(1-f)*s);
+  switch(i%6){
+    case 0: r=v; g=t; b=p; break;
+    case 1: r=q; g=v; b=p; break;
+    case 2: r=p; g=v; b=t; break;
+    case 3: r=p; g=q; b=v; break;
+    case 4: r=t; g=p; b=v; break;
+    default: r=v; g=p; b=q; break;
+  }
+  return [r,g,b];
+}
+function rgb255(a){ return Math.max(0, Math.min(255, Math.floor(a*255))); }
+
+let updateCounter = 0;
+const bgStartTime = Date.now();
+
+class Bubble {
+  constructor(initial=false){
+    this.baseRadius = 36.0 + Math.random()*140.0;
+    this.radius = this.baseRadius;
+    this.vy = 0.18 + Math.random()*0.9;
+    this.bulgeSpeed = 0.4 + Math.random()*1.6;
+    this.phase = Math.random() * Math.PI * 2;
+    this.amplitude = 0.08 + Math.random()*0.48;
+    const centers = [0.96, 0.80, 0.63];
+    let pick = centers[Math.floor(Math.random()*centers.length)];
+    let hueBase = (pick + (Math.random()*0.06 - 0.03) + 1) % 1.0;
+    let sat = 0.50 + Math.random()*0.45;
+    let val = 0.78 + Math.random()*0.22;
+    const rgb = hsvToRgb(hueBase, sat, val);
+    this.r = rgb[0]; this.g = rgb[1]; this.b = rgb[2];
+    this.alpha = 0.16 + Math.random()*0.38;
+    this.appearTimer = 0;
+    this.appearDuration = 8 + Math.floor(Math.random()*36);
+    this.appearAlpha = initial ? 1.0 : 0.0;
+    this.x = Math.random()*(W+80) - 40;
+    this.y = initial ? (Math.random()*(H+200) - 100) : -this.baseRadius - Math.random()*300;
+    this.burst = 0;
+  }
+  update(){
+    this.phase += this.bulgeSpeed * 0.018;
+    if (Math.random() < 0.002) this.burst = 12 + Math.floor(Math.random()*36);
+    if (this.burst > 0) this.burst--;
+    const globalOsc = Math.sin(this.phase + updateCounter * 0.03);
+    const amplitude = this.amplitude * (1.0 + this.burst * 0.01);
+    const bulge = 1.0 + amplitude * globalOsc;
+    this.radius = this.baseRadius * bulge;
+    const sinkMultiplier = 1.0 - (amplitude * (globalOsc * 0.25));
+    this.y += this.vy * sinkMultiplier * 0.55;
+    this.x += Math.sin((this.phase * 0.7 + updateCounter * 0.01)) * (0.3 + amplitude * 0.45);
+    if (this.appearTimer < this.appearDuration) {
+      this.appearTimer++;
+      this.appearAlpha = Math.min(1.0, this.appearTimer / this.appearDuration);
+    } else this.appearAlpha = 1.0;
+    if (this.y - this.radius > H + 60) {
+      const nb = new Bubble(false);
+      if (Math.random() < 0.8) {
+        nb.y = -nb.baseRadius - Math.random()*200;
+        nb.x = Math.random()*(W+60) - 30;
+      } else {
+        if (Math.random() < 0.5) { nb.x = -nb.baseRadius - Math.random()*150; nb.y = Math.random()*(H+200) - 100; }
+        else { nb.x = W + nb.baseRadius + Math.random()*150; nb.y = Math.random()*(H+200) - 100; }
+      }
+      Object.assign(this, nb);
+    }
+  }
+}
+
+class Snowflake {
+  constructor(){
+    this.x = Math.random()*W;
+    this.y = Math.random()*(H+200) - 200;
+    this.size = 0.5 + Math.random()*1.1;
+    this.speed = 0.15 + Math.random()*0.6;
+    this.offset = Math.random()*10;
+  }
+  update(){
+    this.y += this.speed;
+    this.x += Math.sin((updateCounter * 0.01 + this.offset)) * 0.3;
+    if (this.y > H + 5) {
+      this.y = -5 - Math.random()*20;
+      this.x = Math.random()*W;
+    }
+  }
+}
+
+let bubbles = [];
+let snowflakes = [];
+function initAnimatedBackground(){
+  bubbles = [];
+  snowflakes = [];
+  const initialBubbleCount = Math.max(20, Math.floor((W*H)/45000));
+  for (let i=0;i<initialBubbleCount;i++){
+    const b = new Bubble(true);
+    b.y = Math.random()*(H+200) - 100;
+    b.x = Math.random()*(W+80) - 40;
+    bubbles.push(b);
+  }
+  const snowCount = Math.max(120, Math.floor((W*H)/6000));
+  for (let i=0;i<snowCount;i++) snowflakes.push(new Snowflake());
+}
+initAnimatedBackground();
+
+function drawRadialCircle(ctxLocal, cx, cy, radius, cr, cg, cb, alpha){
+  ctxLocal.save();
+  let g = ctxLocal.createRadialGradient(cx,cy,Math.max(1,radius*0.05), cx,cy, radius);
+  g.addColorStop(0, `rgba(${rgb255(cr)},${rgb255(cg)},${rgb255(cb)},${alpha})`);
+  g.addColorStop(0.6, `rgba(${rgb255(cr)},${rgb255(cg)},${rgb255(cb)},${alpha*0.12})`);
+  g.addColorStop(1, `rgba(${rgb255(cr)},${rgb255(cg)},${rgb255(cb)},0)`);
+  ctxLocal.globalCompositeOperation = 'source-over';
+  ctxLocal.fillStyle = g;
+  ctxLocal.beginPath();
+  ctxLocal.arc(cx, cy, radius, 0, Math.PI*2);
+  ctxLocal.fill();
+  ctxLocal.globalCompositeOperation = 'lighter';
+  let glow = ctxLocal.createRadialGradient(cx,cy,radius*0.2, cx,cy, radius*1.28);
+  glow.addColorStop(0, `rgba(${rgb255(cr)},${rgb255(cg)},${rgb255(cb)},${alpha*0.45})`);
+  glow.addColorStop(0.55, `rgba(${rgb255(cr)},${rgb255(cg)},${rgb255(cb)},${alpha*0.08})`);
+  glow.addColorStop(1, `rgba(${rgb255(cr)},${rgb255(cg)},${rgb255(cb)},0)`);
+  ctxLocal.fillStyle = glow;
+  ctxLocal.beginPath();
+  ctxLocal.arc(cx, cy, radius*1.28, 0, Math.PI*2);
+  ctxLocal.fill();
+  ctxLocal.restore();
+}
+
+function drawSnowflakeGlow(ctxLocal, x, y, size) {
+  const a = 0.9 * (0.5 + 0.5 * Math.abs(Math.sin((updateCounter + x)*0.02)));
+  drawRadialCircle(ctxLocal, x, y, size * 3.0, 1.0, 1.0, 1.0, a);
+}
+
+let last = performance.now();
+function frame(now){
+  const dt = Math.min(0.2, (now - last)/1000);
+  last = now;
+  updateCounter++;
+
+  const targetX = Math.max(-1, Math.min(1, (mouse.x - W*0.5)/(W*0.5)));
+  const targetY = Math.max(-1, Math.min(1, (mouse.y - H*0.5)/(H*0.5)));
+  par.x += (targetX - par.x) * parallaxLerp;
+  par.y += (targetY - par.y) * parallaxLerp;
+  const parallaxShiftX = par.x * parallaxMax;
+  const parallaxShiftY = par.y * parallaxMax * 0.6;
+
+  ctx.clearRect(0,0,W,H);
+
+  const nowMs = Date.now();
+  const rawT = ((nowMs - bgStartTime) % 24000) / 24000;
+  const smoothT = 0.5 - 0.5 * Math.cos(rawT * Math.PI * 2.0);
+
+  const topHue = (smoothT * 0.12 + 0.89) % 1.0;
+  const bottomHue = ((smoothT + 0.22) * 0.12 + 0.7) % 1.0;
+  const topColor = hsvToRgb(topHue, 0.65, 0.98);
+  const bottomColor = hsvToRgb(bottomHue, 0.60, 0.92);
+
+  const colorBoost = 1.12;
+  for (let i=0;i<3;i++){
+    topColor[i] = Math.min(1.0, topColor[i] * colorBoost * backgroundDarkness);
+    bottomColor[i] = Math.min(1.0, bottomColor[i] * colorBoost * backgroundDarkness);
+  }
+
+  let grad = ctx.createLinearGradient(0,0,0,H);
+  grad.addColorStop(0, `rgb(${rgb255(topColor[0])},${rgb255(topColor[1])},${rgb255(topColor[2])})`);
+  grad.addColorStop(1, `rgb(${rgb255(bottomColor[0])},${rgb255(bottomColor[1])},${rgb255(bottomColor[2])})`);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0,0,W,H);
+
+  const washColor = hsvToRgb((smoothT * 0.2 + 0.6) % 1.0, 0.75, 1.0);
+  for (let i=0;i<3;i++) washColor[i] *= backgroundDarkness;
+  const washAlpha = 0.09;
+  const offsetX = Math.sin(nowMs * 0.00016) * 60.0;
+  const offsetY = Math.cos(nowMs * 0.00011) * 28.0;
+  ctx.save();
+  ctx.globalAlpha = washAlpha;
+  ctx.fillStyle = `rgba(${rgb255(washColor[0])},${rgb255(washColor[1])},${rgb255(washColor[2])},1)`;
+  ctx.translate(parallaxShiftX * 0.6 + offsetX, parallaxShiftY * 0.6 + offsetY);
+  ctx.beginPath();
+  ctx.rect(-120, -120, W + 240, H + 240);
+  ctx.fill();
+  ctx.restore();
+
+  const maxBubbles = Math.max(36, Math.floor((W*H)/40000));
+  if (bubbles.length < maxBubbles && Math.random() < 0.06) bubbles.push(new Bubble(false));
+  for (let b of bubbles) b.update();
+  for (let s of snowflakes) s.update();
+
+  for (let b of bubbles) {
+    const finalAlpha = b.alpha * b.appearAlpha * 1.0;
+    const bulgeOsc = Math.sin(b.phase + updateCounter*0.035);
+    const bulge = 1.0 + b.amplitude * bulgeOsc;
+    const r = b.baseRadius * bulge;
+    const rr = b.r * backgroundDarkness;
+    const gg = b.g * backgroundDarkness;
+    const bb = b.b * backgroundDarkness;
+    const depth = 0.4 + (b.baseRadius / 300.0);
+    drawRadialCircle(ctx, b.x + parallaxShiftX * depth, b.y + parallaxShiftY * depth, r, rr, gg, bb, finalAlpha);
+  }
+
+  for (let s of snowflakes) drawSnowflakeGlow(ctx, s.x + parallaxShiftX * 0.35, s.y + parallaxShiftY * 0.35, s.size);
+
+  const vign = ctx.createLinearGradient(0,0,0,H);
+  vign.addColorStop(0, 'rgba(0,0,0,0.02)');
+  vign.addColorStop(0.6, 'rgba(0,0,0,0.12)');
+  vign.addColorStop(1, 'rgba(0,0,0,0.28)');
+  ctx.fillStyle = vign;
+  ctx.fillRect(0,0,W,H);
+
+  drawCursorOverlay(dt);
+
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+const customCursorAlpha = 0.65;
+const customCursorRadius = 6;
+const cursorSmoothness = 20.0;
+let cursorX = W/2, cursorY = H/2, cursorTargetX = W/2, cursorTargetY = H/2;
+let cursorLastTime = performance.now();
+let clickAnimating = false, clickAnimProgress = 0;
+const clickAnimDuration = 0.18;
+
+window.addEventListener('mousemove', e => { cursorTargetX = e.clientX; cursorTargetY = e.clientY; });
+window.addEventListener('touchstart', e => { if(e.touches && e.touches[0]) { cursorTargetX = e.touches[0].clientX; cursorTargetY = e.touches[0].clientY; }}, {passive:true});
+window.addEventListener('mousedown', startClickAnim);
+window.addEventListener('touchstart', startClickAnim, {passive:true});
+
+function startClickAnim(){ clickAnimating = true; clickAnimProgress = 0; }
+
+function drawCursorOverlay(dt){
+  const now = performance.now();
+  const rawDt = Math.min(0.2, (now - cursorLastTime)/1000);
+  cursorLastTime = now;
+  const alphaS = 1 - Math.exp(-cursorSmoothness * rawDt);
+  cursorX += (cursorTargetX - cursorX) * alphaS;
+  cursorY += (cursorTargetY - cursorY) * alphaS;
+
+  if (clickAnimating) {
+    clickAnimProgress += rawDt / clickAnimDuration;
+    if (clickAnimProgress >= 1.0){ clickAnimProgress = 1.0; clickAnimating = false; }
+  }
+
+  cctx.clearRect(0,0,W,H);
+  cctx.save();
+
+  cctx.globalAlpha = customCursorAlpha;
+  cctx.beginPath();
+  const coreScale = 0.9 + 0.15 * (1 + (-Math.pow(1-clickAnimProgress,3)));
+  cctx.arc(cursorX, cursorY, customCursorRadius * coreScale, 0, Math.PI*2);
+  cctx.fillStyle = 'rgba(255,255,255,1)';
+  cctx.fill();
+
+  cctx.globalAlpha = customCursorAlpha * 0.45;
+  cctx.lineWidth = 1.2;
+  cctx.beginPath();
+  cctx.arc(cursorX, cursorY, customCursorRadius + 0.6, 0, Math.PI*2);
+  cctx.strokeStyle = 'rgba(255,255,255,1)';
+  cctx.stroke();
+
+  if (clickAnimProgress > 0){
+    const progress = clickAnimProgress;
+    const rippleRadius = customCursorRadius + (30 * progress);
+    const rippleA = (1.0 - progress) * 0.9;
+    cctx.globalAlpha = rippleA;
+    cctx.lineWidth = 2.0;
+    cctx.beginPath();
+    cctx.arc(cursorX, cursorY, rippleRadius, 0, Math.PI*2);
+    cctx.strokeStyle = 'rgba(255,255,255,1)';
+    cctx.stroke();
+  }
+
+  cctx.restore();
+}
+
+document.querySelectorAll('.btn').forEach(b=>{
+  b.addEventListener('pointerdown', e => { startClickAnim(); });
+
+  b.addEventListener('click', (ev) => {
+    if (b.id === 'downloadBtn') {
+      window.open('https://cdn.discordapp.com/attachments/1381012920942465095/1448892182915190865/SunarMC-R2-F4.jar?ex=693ce97f&is=693b97ff&hm=df7c61ed39d726f2a936b60c46d29cfdfd68dc0bb0300702037327e78894b2ec&', '_blank');
+    } else if (b.id === 'changelogBtn') {
+      window.open('https://github.com/MikaSukie/SunarMC-Changelog', '_blank');
+    }
+  });
+});
+
+addEventListener('resize', () => {
+  resize();
+  initAnimatedBackground();
+});
+</script>
+</body>
+</html>
