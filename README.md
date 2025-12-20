@@ -1,7 +1,7 @@
 # SunarMC
 ## Development progress: in progress
 ### The changelogs might have not recorded all changes but most.
-<img width="1920" height="1080" alt="Screenshot_20251211_224902" src="https://github.com/user-attachments/assets/f404fb8d-6f1f-4037-b71d-58a77d0eb27e" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/1602c651-1f75-4981-bbe3-10633bd04d19" /> <br>
 total recorded changelogs:
 adds Mojang API skins but falling back to a different faster API
 -weather changer <br>
