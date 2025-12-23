@@ -109,3 +109,10 @@ default will show on default slider values <br>
 -Massive Backend changes including a new instance system for the client. <br>
 --basically a lot of the structure, client code has been rewritten and organized. <br>
 -this will ship as a minor update even though its the biggest update. <br>
+
+-hotbar keys are now configurable keybinds, also <br>
+-Custom skin server has been implemented. so if you want a custom skin or cape DM or Ping me. Application can take 5-10 minutes but <br>
+-changing capes will take 30min-1 hour <br>
+
+-minimap arrow is finally an ACTUAL arrow not 2 boxes. <br>
+-new slider for crouch interoplation so smooth 3rd person and other player crouching <br>
