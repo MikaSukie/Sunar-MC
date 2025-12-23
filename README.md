@@ -118,3 +118,5 @@ default will show on default slider values <br>
 -new slider for crouch interoplation so smooth 3rd person and other player crouching <br>
 
 -fixed a 2nd layer angles not copying bug.
+
+-FINALLY FIXED THE double shutdown bug and crashing on game close that has existed since R1 (holy)
