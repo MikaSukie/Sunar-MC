@@ -116,3 +116,5 @@ default will show on default slider values <br>
 
 -minimap arrow is finally an ACTUAL arrow not 2 boxes. <br>
 -new slider for crouch interoplation so smooth 3rd person and other player crouching <br>
+
+-fixed a 2nd layer angles not copying bug.
