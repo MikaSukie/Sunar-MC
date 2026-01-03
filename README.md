@@ -1,7 +1,7 @@
 # SunarMC
 ## Development progress: in progress
 ### The changelogs might have not recorded all changes but most.
-<img width="1000" height="563" alt="image" src="https://drive.google.com/drive/folders/10a3_2Du5qbnxUY2ighluBok7r_2mVGIn?usp=drive_link" /> <br>
+<img width="1000" height="563" alt="image" src="[https://drive.google.com/drive/folders/10a3_2Du5qbnxUY2ighluBok7r_2mVGIn?usp=drive_link](https://github.com/user-attachments/assets/1b2989cf-6734-4fe6-a4ba-1cdbd59d8991)" /> <br>
 
 ```text
    ____ ____  _____ ____ ___ _____ ____    _____ ___   
