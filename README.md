@@ -1,7 +1,24 @@
 # SunarMC
 ## Development progress: in progress
 ### The changelogs might have not recorded all changes but most.
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/1602c651-1f75-4981-bbe3-10633bd04d19" /> <br>
+<img width="1000" height="563" alt="image" src="https://drive.google.com/drive/folders/10a3_2Du5qbnxUY2ighluBok7r_2mVGIn?usp=drive_link" /> <br>
+
+```text
+   ____ ____  _____ ____ ___ _____ ____    _____ ___   
+  / ___|  _ \| ____|  _ \_ _|_   _/ ___|  |_   _/ _ \  
+ | |   | |_) |  _| | | | | |  | | \___ \    | || | | | 
+ | |___|  _ <| |___| |_| | |  | |  ___) |   | || |_| | 
+  \____|_|_\_\_____|____/___|_|_|_|____/    |_| \___/  
+  / ___|___  |__  /\ \ / / ___/ _ \ \      / /  ( _ )  
+ | |      / /  / /  \ V / |  | | | \ \ /\ / /   / _ \/\
+ | |___  / /  / /_   | || |__| |_| |\ V  V /   | (_>  <
+  \____|/_/_ /____|  |_| \____\___/  \_/\_/____ \___/\/
+ |  \/  |_ _| |/ /   / \  / ___|| | | | |/ /_ _| ____| 
+ | |\/| || || ' /   / _ \ \___ \| | | | ' / | ||  _|   
+ | |  | || || . \  / ___ \ ___) | |_| | . \ | || |___  
+ |_|  |_|___|_|\_\/_/   \_\____/ \___/|_|\_\___|_____| 
+```
+
 total recorded changelogs:
 adds Mojang API skins but falling back to a different faster API
 -weather changer <br>
