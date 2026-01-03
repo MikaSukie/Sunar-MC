@@ -1,7 +1,7 @@
 # SunarMC
 ## Development progress: in progress
 ### The changelogs might have not recorded all changes but most.
-<img width="1000" height="563" alt="image" src="https://rotarypictures.wordpress.com/wp-content/uploads/2026/01/screenshot-2026-01-03-232817.png?w=1024" /> <br>
+<img width="1000" height="563" alt="image" src="https://drive.google.com/drive/folders/10a3_2Du5qbnxUY2ighluBok7r_2mVGIn?usp=drive_link" /> <br>
 
 ```text
    ____ ____  _____ ____ ___ _____ ____    _____ ___   
